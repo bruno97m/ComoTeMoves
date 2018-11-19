@@ -1,0 +1,79 @@
+body {
+    background-image: url("https://www.thetimes.co.uk/travel/s3/growthtravel-prod/uploads/2016/10/AlamyLisbon_SeanPavone.jpg");
+    /* The image used */
+    background-color: #cccccc;
+    /* Used if the image is unavailable */
+    background-position: center;
+    /* Center the image */
+    background-repeat: no-repeat;
+    /* Do not repeat the image */
+    background-size: cover;
+    height: 800px;
+
+}
+
+#logo {
+    width: 30%;
+    height: 30%;
+}
+
+.logo {
+    text-align: center;
+    margin-top: 20px;
+    text-shadow: 3px 3px 0 #000,
+    -1px -1px 0 #000,
+    1px -1px 0 #000,
+    -1px 1px 0 #000,
+    1px 1px 0 #000;
+}
+
+.nome {
+
+    text-align: center;
+    font-family: "Sofia";
+    font-size: 60px;
+    margin-top: 60px;
+    color: white;
+    text-shadow: 3px 3px 0 #000,
+    -1px -1px 0 #000,
+    1px -1px 0 #000,
+    -1px 1px 0 #000,
+    1px 1px 0 #000;
+
+}
+
+.login {
+    margin-right: auto;
+    margin-left: auto;
+    padding: 2em;
+    position: relative;
+
+    border-radius: 25px;
+
+}
+
+.button {
+    background-color: white;
+    color: black;
+    border: 2px solid #a5c5f7;
+    border-radius: 25px;
+
+}
+
+.button:hover {
+    background-color: #a5c5f7;
+    color: white;
+    cursor: pointer;
+}
+
+.textbox {
+    border-radius: 25px;
+    box-shadow: none;
+    outline-color: transparent;
+    outline-style: none;
+    border: 1px solid grey;
+}
+
+.textbox[placeholder] {
+    text-align: center;
+}
