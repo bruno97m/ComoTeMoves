@@ -10,6 +10,21 @@
     <script async defer src="https://maps.googleapis.com/maps/api/js?key=AIzaSyAjsCdWtDxNfr2Sz2GwDsjWcL6UtSVZwJM&callback=initMap"></script>
     <link rel="stylesheet" href="css/dashboard.css">
     <script src="chart.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/5.6.0/firebase.js"></script>
+
+    <script>
+        // Initialize Firebase
+        var config = {
+            apiKey: "AIzaSyD3IP1uVgd5cabo8W-hy7keXF5MPqrxFZU",
+            authDomain: "como-te-moves-1542400793110.firebaseapp.com",
+            databaseURL: "https://como-te-moves-1542400793110.firebaseio.com",
+            projectId: "como-te-moves-1542400793110",
+            storageBucket: "como-te-moves-1542400793110.appspot.com",
+            messagingSenderId: "571500213574"
+        };
+        firebase.initializeApp(config);
+
+    </script>
     <title> Dashboard </title>
 
 </head>
@@ -25,9 +40,9 @@
         padding-left: 50px;
         padding-right: 50px;
         text-align: justify;
-
-
     }
+
+
 
     h1,
     h2,
@@ -52,18 +67,15 @@
     #logo {
         height: 35%;
         width: 35%;
+
     }
 
 
     canvas {
 
-        width: 600px !important;
-        height: 200px !important;
+        width: 10 !important;
+        height: 300px !important;
 
-    }
-
-    .myChart{
-        padding-top: 10000;
     }
 
     #map_canvas {
@@ -87,14 +99,12 @@
                 <li><a id="Mapa" data-toggle="pill" href="#mapa">Mapa</a></li>
                 <li><a id="Estatisticas" data-toggle="pill" href="#estatisticas">Estatísticas</a></li>
             </ul>
-            <ul class="nav navbar-nav navbar-right">
-                <li><a href="index.html">Logout</a></li>
-            </ul>
         </div>
     </nav>
 
 
-    <div class="container text-center">
+    <div class="container text-center" style="padding-top: 0px">
+        <button onclick="logout()"> logout </button>
         <h2 class="display-4">Como-Te-Moves</h2>
         <p class="lead"><img id="logo" src="https://upload.wikimedia.org/wikipedia/commons/thumb/2/21/Thales_Logo.svg/2000px-Thales_Logo.svg.png" width="700px"></p>
     </div>
@@ -107,113 +117,124 @@
             <div id="map_canvas"></div>
         </div>
         <div id="estatisticas" class="tab-pane fade">
-                <canvas id="myChart" width="200" height="100"></canvas>
-                <canvas id="myChart2" width="200" height="100"></canvas>
+            <div class="row">
+                <canvas class="col-md-12" id="myChart"></canvas>
+            </div>
+            <div class="row">
+                <canvas class="col-md-12" id="myChart2"></canvas>
             </div>
         </div>
+    </div>
 
     <script>
-        //Mapa tab
+        //logout
+        function logout() {
+             firebase.auth().signOut();
+              window.location.href = "./index.html"
+        }
 
-        $('#Estatisticas').click(function(e) {
-            var ctx = document.getElementById("myChart").getContext('2d');
-            var myChart = new Chart(ctx, {
-                type: 'pie',
-                data: {
-                    labels: ["Red", "Blue", "Yellow", "Green", "Purple", "Orange"],
-                    datasets: [{
-                        label: '# of Votes',
-                        data: [12, 19, 3, 5, 2, 3],
-                        backgroundColor: [
-                            'rgba(255, 99, 132, 0.2)',
-                            'rgba(54, 162, 235, 0.2)',
-                            'rgba(255, 206, 86, 0.2)',
-                            'rgba(75, 192, 192, 0.2)',
-                            'rgba(153, 102, 255, 0.2)',
-                            'rgba(255, 159, 64, 0.2)'
-                        ],
-                        borderColor: [
-                            'rgba(255,99,132,1)',
-                            'rgba(54, 162, 235, 1)',
-                            'rgba(255, 206, 86, 1)',
-                            'rgba(75, 192, 192, 1)',
-                            'rgba(153, 102, 255, 1)',
-                            'rgba(255, 159, 64, 1)'
-                        ],
-                        borderWidth: 1
-                    }]
-                },
-                options: {
-                    responsive: true,
-                    maintainAspectRatio: false,
-                    layout: {
-                        padding: {
-                            left: 0,
-                            right: 0,
-                            top: 0,
-                            bottom: 0
+
+            //Mapa tab
+
+            $('#Estatisticas').click(function(e) {
+                var ctx = document.getElementById("myChart").getContext('2d');
+                var myChart = new Chart(ctx, {
+                    type: 'pie',
+                    data: {
+                        labels: ["Red", "Blue", "Yellow", "Green", "Purple", "Orange"],
+                        datasets: [{
+                            label: '# of Votes',
+                            data: [12, 19, 3, 5, 2, 3],
+                            backgroundColor: [
+                                'rgba(255, 99, 132, 0.2)',
+                                'rgba(54, 162, 235, 0.2)',
+                                'rgba(255, 206, 86, 0.2)',
+                                'rgba(75, 192, 192, 0.2)',
+                                'rgba(153, 102, 255, 0.2)',
+                                'rgba(255, 159, 64, 0.2)'
+                            ],
+                            borderColor: [
+                                'rgba(255,99,132,1)',
+                                'rgba(54, 162, 235, 1)',
+                                'rgba(255, 206, 86, 1)',
+                                'rgba(75, 192, 192, 1)',
+                                'rgba(153, 102, 255, 1)',
+                                'rgba(255, 159, 64, 1)'
+                            ],
+                            borderWidth: 1
+                        }]
+                    },
+                    options: {
+                        responsive: true,
+                        maintainAspectRatio: false,
+                        layout: {
+                            padding: {
+                                left: 0,
+                                right: 0,
+                                top: 0,
+                                bottom: 0
+                            }
                         }
+
                     }
 
-                }
+                });
 
-            });
-
-            var ctx2 = document.getElementById("myChart2").getContext('2d');
-            var myChart2 = new Chart(ctx2, {
-                type: 'bar',
-                data: {
-                    labels: ["Red", "Blue", "Yellow", "Green", "Purple", "Orange"],
-                    datasets: [{
-                        label: '# of Votes',
-                        data: [12, 19, 3, 5, 2, 3],
-                        backgroundColor: [
-                            'rgba(255, 99, 132, 0.2)',
-                            'rgba(54, 162, 235, 0.2)',
-                            'rgba(255, 206, 86, 0.2)',
-                            'rgba(75, 192, 192, 0.2)',
-                            'rgba(153, 102, 255, 0.2)',
-                            'rgba(255, 159, 64, 0.2)'
-                        ],
-                        borderColor: [
-                            'rgba(255,99,132,1)',
-                            'rgba(54, 162, 235, 1)',
-                            'rgba(255, 206, 86, 1)',
-                            'rgba(75, 192, 192, 1)',
-                            'rgba(153, 102, 255, 1)',
-                            'rgba(255, 159, 64, 1)'
-                        ],
-                        borderWidth: 1
-                    }]
-                },
-                options: {
-                    responsive: true,
-                    maintainAspectRatio: false,
-                    layout: {
-                        padding: {
-                            left: 0,
-                            right: 0,
-                            top: 0,
-                            bottom: 0
+                var ctx2 = document.getElementById("myChart2").getContext('2d');
+                var myChart2 = new Chart(ctx2, {
+                    type: 'bar',
+                    data: {
+                        labels: ["Red", "Blue", "Yellow", "Green", "Purple", "Orange"],
+                        datasets: [{
+                            label: '# of Votes',
+                            data: [12, 19, 3, 5, 2, 3],
+                            backgroundColor: [
+                                'rgba(255, 99, 132, 0.2)',
+                                'rgba(54, 162, 235, 0.2)',
+                                'rgba(255, 206, 86, 0.2)',
+                                'rgba(75, 192, 192, 0.2)',
+                                'rgba(153, 102, 255, 0.2)',
+                                'rgba(255, 159, 64, 0.2)'
+                            ],
+                            borderColor: [
+                                'rgba(255,99,132,1)',
+                                'rgba(54, 162, 235, 1)',
+                                'rgba(255, 206, 86, 1)',
+                                'rgba(75, 192, 192, 1)',
+                                'rgba(153, 102, 255, 1)',
+                                'rgba(255, 159, 64, 1)'
+                            ],
+                            borderWidth: 1
+                        }]
+                    },
+                    options: {
+                        responsive: true,
+                        maintainAspectRatio: false,
+                        layout: {
+                            padding: {
+                                left: 0,
+                                right: 0,
+                                top: 0,
+                                bottom: 0
+                            }
                         }
+
                     }
 
-                }
-
+                });
             });
-        });
 
-        $('#Mapa').click(function(e) {
-            var lx = {
-                lat: 38.716525,
-                lng: -9.142044
-            };
+            $('#Mapa').click(function(e) {
+                var lx = {
+                    lat: 38.716525,
+                    lng: -9.142044
+                };
 
-            var map = new google.maps.Map(document.getElementById('map_canvas'), {
-                zoom: 12,
-                center: lx
+                var map = new google.maps.Map(document.getElementById('map_canvas'), {
+                    zoom: 12,
+                    center: lx
+                });
             });
-        });
 
     </script>
 </body>
