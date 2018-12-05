@@ -1,8 +1,9 @@
 const express = require('express');
 var bodyParser = require('body-parser')
 const mysql = require('mysql');
-var cookieParser = require('cookie-parser')
-var session = require('express-session')
+var cookieParser = require('cookie-parser');
+var session = require('express-session');
+var expressValidator = require('express-validator');
 var passport = require('passport');
 var passport = require('passport')
   , LocalStrategy = require('passport-local').Strategy;
@@ -44,6 +45,7 @@ app.use(session({
 app.use(passport.initialize());
 app.use(passport.session());
 
+
 // parse application/x-www-form-urlencoded
 app.use(bodyParser.urlencoded({
     extended: false
@@ -52,7 +54,7 @@ app.use(bodyParser.urlencoded({
 // parse application/json
 app.use(bodyParser.json())
 
-
+app.use
 
 
 app.get('/getUser', (req, res) => {

@@ -9,19 +9,7 @@
     <title> Register </title>
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
     <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/5.6.0/firebase.js"></script>
-    <script>
-        // Initialize Firebase
-  var config = {
-    apiKey: "AIzaSyD3IP1uVgd5cabo8W-hy7keXF5MPqrxFZU",
-    authDomain: "como-te-moves-1542400793110.firebaseapp.com",
-    databaseURL: "https://como-te-moves-1542400793110.firebaseio.com",
-    projectId: "como-te-moves-1542400793110",
-    storageBucket: "como-te-moves-1542400793110.appspot.com",
-    messagingSenderId: "571500213574"
-  };
-  firebase.initializeApp(config);
-</script>
+
 </head>
 
 
@@ -33,10 +21,6 @@
                 <td colspan="2" style="align-content: center">
                     <h1 style="text-align:center">Registo</h1>
                 </td>
-            </tr>
-            <tr>
-                <td class="indicador"><label for="nome">Nome:</label></td>
-                <td><input type="text" id="nome" pattern="[A-Za-z]" class="textbox"></td>
             </tr>
             <tr>
                 <td class="indicador"><label for="username">Username:</label></td>
@@ -58,7 +42,7 @@
             <tr>
                 <td colspan="2" style="align-content: center">
                     <div style="text-align: center">
-                        <input type="button" value="Confirm" id="success" class="button" />
+                        <input type="button" value="Confirm" id="success" class="button" onclick="registarUser()" />
                     </div>
                 </td>
             </tr>

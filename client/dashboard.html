@@ -10,21 +10,6 @@
     <script async defer src="https://maps.googleapis.com/maps/api/js?key=AIzaSyAjsCdWtDxNfr2Sz2GwDsjWcL6UtSVZwJM&callback=initMap"></script>
     <link rel="stylesheet" href="css/dashboard.css">
     <script src="chart.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/5.6.0/firebase.js"></script>
-
-    <script>
-        // Initialize Firebase
-        var config = {
-            apiKey: "AIzaSyD3IP1uVgd5cabo8W-hy7keXF5MPqrxFZU",
-            authDomain: "como-te-moves-1542400793110.firebaseapp.com",
-            databaseURL: "https://como-te-moves-1542400793110.firebaseio.com",
-            projectId: "como-te-moves-1542400793110",
-            storageBucket: "como-te-moves-1542400793110.appspot.com",
-            messagingSenderId: "571500213574"
-        };
-        firebase.initializeApp(config);
-
-    </script>
     <title> Dashboard </title>
 
 </head>
@@ -99,12 +84,14 @@
                 <li><a id="Mapa" data-toggle="pill" href="#mapa">Mapa</a></li>
                 <li><a id="Estatisticas" data-toggle="pill" href="#estatisticas">Estatísticas</a></li>
             </ul>
+            <ul class="nav navbar-nav navbar-right">
+        <li><a> Logout </a></li>
+      </ul>
         </div>
     </nav>
 
 
     <div class="container text-center" style="padding-top: 0px">
-        <button onclick="logout()"> logout </button>
         <h2 class="display-4">Como-Te-Moves</h2>
         <p class="lead"><img id="logo" src="https://upload.wikimedia.org/wikipedia/commons/thumb/2/21/Thales_Logo.svg/2000px-Thales_Logo.svg.png" width="700px"></p>
     </div>
@@ -127,12 +114,6 @@
     </div>
 
     <script>
-        //logout
-        function logout() {
-             firebase.auth().signOut();
-              window.location.href = "./index.html"
-        }
-
 
             //Mapa tab
 
