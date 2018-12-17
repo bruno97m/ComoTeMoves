@@ -10,6 +10,7 @@
     <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
     <script src="https://unpkg.com/leaflet@1.3.4/dist/leaflet.js" integrity="sha512-nMMmRyTVoLYqjP9hrbed9S+FzjZHW5gY1TWCHA5ckwXZBadntCNs8kEqAWdrb9O7rxbCaA4lKTIWjDXZxflOcA==" crossorigin=""></script>
     <script src="freguesias.js"></script>
+    <script src="roads.js"></script>
     <link rel="stylesheet" href="css/dashboard.css">
     <title> Dashboard </title>
 
@@ -212,10 +213,12 @@
                 map.invalidateSize()
             }, 500);
 
+
+            alert(freguesias.features[0].properties.NOME);
             var lat = 38.7071;
             var long = -9.13549;
 
-            var map = L.map('map_canvas').setView([lat, long], 13);
+            var map = L.map('map_canvas').setView([lat, long], 12);
 
             L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
                 attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
@@ -230,14 +233,21 @@
                 "weight": 5,
                 "opacity": 0.65
             };
-
-            function points(feature, layer) {
-                layer.bindPopup("HI!")
-
+            //Marker em cada freguesia
+            function onEachFeature(feature, layer) {
+                if (feature.properties && feature.properties.NOME) {
+                    layer.bindPopup(feature.properties.NOME);
+                }
             }
+
             L.geoJSON(freguesias, {
-                style: myStyle
+                style: myStyle,
+                onEachFeature: onEachFeature
             }).addTo(map);
+
+
+
+
 
 
         });
