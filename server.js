@@ -1,15 +1,20 @@
-const express = require('express');
+var express = require('express');
 var bodyParser = require('body-parser')
-const mysql = require('mysql');
+var mysql = require('mysql');
 var cookieParser = require('cookie-parser');
 var session = require('express-session');
 var expressValidator = require('express-validator');
 var passport = require('passport');
 var passport = require('passport')
   , LocalStrategy = require('passport-local').Strategy;
+var flash = require('connect-flash');
+var http = require('http')
+var app = express();
+var bcrypt = require('bcrypt');
+var router = express.Router();
 
 
-const app = express();
+
 
 //sql create connection
 var db = mysql.createConnection({
@@ -52,9 +57,35 @@ app.use(bodyParser.urlencoded({
 }))
 
 // parse application/json
-app.use(bodyParser.json())
 
-app.use
+
+
+app.use(expressValidator({
+    errorFormatter: function (param, msg, value){
+    var namespace =param.split('.')
+    , root = namespace.shift()
+    , formParam = root;
+
+    while (namespace.length) {
+        formParam += '[' + namespace.shift() + ']';
+    }
+        return {
+        param : formParam,
+        msg : msg,
+        value : value
+        };
+    }
+}));
+
+app.use(flash());
+
+app.use(function (req,res,next) {
+    res.locals.success_msg = req.flash('success_msg');
+    res.locals.error_msg= req.flash('error_msg');
+    res.locals.error = req.flash ('error');
+    res.locals.user = req.user || null;
+    next ();
+});
 
 
 app.get('/getUser', (req, res) => {
@@ -68,6 +99,17 @@ app.get('/getUser', (req, res) => {
 });
 
 
+app.get('/getCoordenadas', (req, res) => {
+    let sql = 'SELECT ORIGIN_LONGITUDE,ORIGIN_LATITUDE,DESTINATION_LONGITUDE,DESTINATION_LATITUDE FROM SIMULATION_DATA';
+    db.query(sql, (err, result) => {
+        if (err) throw err;
+        res.send(result);
+
+    });
+});
+
+
+
 app.get('/test', function (req, res) {
     //about my sql
     db.query("SELECT * FROM user", function (error, rows, fields) {
@@ -75,8 +117,31 @@ app.get('/test', function (req, res) {
             console.log('error in the query');
         } else {
             console.log('Successful query');
-            res.send(rows[0].Nome);
+            res.send(rows[0].username);
         }
     });
-})
+});
+router.get('/submit', function(req, res) {
+  res.render('client/index.html');
+});
+
+
+app.post('/submit', function(req,res){
+    console.log(req.body);
+
+var sql = " select * from user;
+
+db.query(sql, function(err){
+    if(err) throw err;
+    res.render('client/index.html',{title:'Data Saved',
+    message: 'Data Saved successfully.'})
+
+});
+
+});
+
+
+
+
+
 
