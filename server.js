@@ -5,8 +5,8 @@ var cookieParser = require('cookie-parser');
 var session = require('express-session');
 var expressValidator = require('express-validator');
 var passport = require('passport');
-var passport = require('passport')
-  , LocalStrategy = require('passport-local').Strategy;
+var passport = require('passport'),
+    LocalStrategy = require('passport-local').Strategy;
 var flash = require('connect-flash');
 var http = require('http')
 var app = express();
@@ -35,7 +35,9 @@ db.connect(function (err) {
     }
 });
 
-app.listen(3000, () => console.log('Example applistening on port 3000!!!'));
+app.listen(3000, function () {
+    console.log('Example app listening on port 3000!!!');
+});
 
 
 app.use(cookieParser());
@@ -61,36 +63,36 @@ app.use(bodyParser.urlencoded({
 
 
 app.use(expressValidator({
-    errorFormatter: function (param, msg, value){
-    var namespace =param.split('.')
-    , root = namespace.shift()
-    , formParam = root;
+    errorFormatter: function (param, msg, value) {
+        var namespace = param.split('.'),
+            root = namespace.shift(),
+            formParam = root;
 
-    while (namespace.length) {
-        formParam += '[' + namespace.shift() + ']';
-    }
+        while (namespace.length) {
+            formParam += '[' + namespace.shift() + ']';
+        }
         return {
-        param : formParam,
-        msg : msg,
-        value : value
+            param: formParam,
+            msg: msg,
+            value: value
         };
     }
 }));
 
 app.use(flash());
 
-app.use(function (req,res,next) {
+app.use(function (req, res, next) {
     res.locals.success_msg = req.flash('success_msg');
-    res.locals.error_msg= req.flash('error_msg');
-    res.locals.error = req.flash ('error');
+    res.locals.error_msg = req.flash('error_msg');
+    res.locals.error = req.flash('error');
     res.locals.user = req.user || null;
-    next ();
+    next();
 });
 
 
-app.get('/getUser', (req, res) => {
-    let sql = 'SELECT * FROM user';
-    db.query(sql, (err, result) => {
+app.get('/getUser', function (req, res) {
+    let query = 'SELECT * FROM user';
+    db.query(query, function (err, result) {
         if (err) throw err;
         console.log(result);
         res.send(result);
@@ -99,12 +101,11 @@ app.get('/getUser', (req, res) => {
 });
 
 
-app.get('/getCoordenadas', (req, res) => {
-    let sql = 'SELECT ORIGIN_LONGITUDE,ORIGIN_LATITUDE,DESTINATION_LONGITUDE,DESTINATION_LATITUDE FROM SIMULATION_DATA';
+app.get('/getCoordenadas', function (req, res) {
+    let sql = 'SELECT ORIGIN_LONGITUDE,ORIGIN_LATITUDE,DESTINATION_LONGITUDE,DESTINATION_LATITUDE FROM SIMULATION_DATA LIMIT 10';
     db.query(sql, (err, result) => {
         if (err) throw err;
         res.send(result);
-
     });
 });
 
@@ -121,27 +122,27 @@ app.get('/test', function (req, res) {
         }
     });
 });
-router.get('/submit', function(req, res) {
-  res.render('client/index.html');
+router.get('/submit', function (req, res) {
+       res.redirect("/");
 });
 
 
-app.post('/submit', function(req,res){
+app.post('/submit', function (req, res) {
     console.log(req.body);
+    var username = req.body.username;
+    var email = req.body.email;
+    var password = req.body.password;
+    var checkpassword = req.body.checkpassword;
 
-var sql = " select * from user;
 
-db.query(sql, function(err){
-    if(err) throw err;
-    res.render('client/index.html',{title:'Data Saved',
-    message: 'Data Saved successfully.'})
+    console.log(username, email);
+
+
+    var sql = 'INSERT INTO user (username,email,password,checkpassword) VALUES (? , ? , ? , ?)';
+
+    db.query(sql,[username , email, password, checkpassword] ,function (err) {
+        if (err) throw err;
+          res.redirect("/");
+    });
 
 });
-
-});
-
-
-
-
-
-

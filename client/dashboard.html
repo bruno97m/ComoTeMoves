@@ -104,8 +104,6 @@
         </div>
         <div id="mapa" class="tab-pane fade">
             <div class="map_canvas" id="map_canvas">
-                <div id="sidebar">
-                    <h1>leaflet-sidebar</h1>
                 </div>
             </div>
         </div>
@@ -117,7 +115,6 @@
                 <canvas class="col-md-12" id="myChart2"></canvas>
             </div>
         </div>
-    </div>
 
     <script>
         //Estatisticas Tab with chart.js
@@ -234,7 +231,14 @@
                 .openPopup();
 
             var myStyle = {
-                "color": "#ff7800",
+                "color": "#ff2700",
+                "weight": 5,
+                "opacity": 0.65
+            };
+
+
+            var gayStyle = {
+                "color": "#ffff00",
                 "weight": 5,
                 "opacity": 0.65
             };
@@ -248,20 +252,28 @@
             }
 
             L.geoJSON(freguesias, {
-                style: myStyle,
-                onEachFeature: onEachFeature
+               style: myStyle,
+               onEachFeature: onEachFeature
             }).addTo(map);
 
 
 
             $.getJSON('http://localhost:3000/getCoordenadas', function(data) {
-                console.log(data);
-                var items = []; // empty array
-
+                /*var items = {
+                    "type":"LineString",
+                    "coordinates": []
+                });*/
+                var items = [];
+                for (point in data)
+                    items.push([[data[point].ORIGIN_LATITUDE, data[point].ORIGIN_LONGITUDE],[data[point].DESTINATION_LATITUDE, data[point].DESTINATION_LONGITUDE]]);
+                L.polyline(items).addTo(map);
+                  L.geoJSON(items, {
+                    style: gayStyle
+                }).addTo(map);
             });
-  $.each(data.features, function(index, value) {
-                    items.push(value.attributes.NAME);
-                });
+  //$.each(data.features, function(index, value) {
+    //                items.push(value.attributes.NAME);
+      //          });
 
         });
 
