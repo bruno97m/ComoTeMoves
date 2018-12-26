@@ -102,7 +102,7 @@ app.get('/getUser', function (req, res) {
 
 
 app.get('/getCoordenadas', function (req, res) {
-    let sql = 'SELECT ORIGIN_LONGITUDE,ORIGIN_LATITUDE,DESTINATION_LONGITUDE,DESTINATION_LATITUDE FROM SIMULATION_DATA ORDER BY NAME DESC LIMIT 2';
+    let sql = 'SELECT ORIGIN_LONGITUDE,ORIGIN_LATITUDE,DESTINATION_LONGITUDE,DESTINATION_LATITUDE,NAME FROM SIMULATION_DATA ORDER BY NAME DESC LIMIT 1';
     db.query(sql, (err, result) => {
         if (err) throw err;
         res.send(result);

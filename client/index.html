@@ -17,13 +17,13 @@
 <body>
     <!--<h1 class="nome">MeetYourMate</h1> -->
     <p class="logo"><img id="logo" src="https://upload.wikimedia.org/wikipedia/commons/thumb/2/21/Thales_Logo.svg/2000px-Thales_Logo.svg.png" border="0"></p>
-    <form action="/postUser" method="post">
+    <form action="/login" method="post">
     <table class="login">
         <tr>
 
             <td colspan="2" style="align-content: center">
                 <div style="text-align: center">
-                    <input type="text" class="textbox" id="email" placeholder="Email">
+                    <input type="text" class="textbox" name="email" id="email" placeholder="Email">
                 </div>
             </td>
         </tr>
@@ -31,7 +31,7 @@
 
             <td colspan="2" style="align-content: center">
                 <div style="text-align: center">
-                    <input type="password" class="textbox" id="password" placeholder="Password">
+                    <input type="password" class="textbox" name="password" id="password" placeholder="Password">
                 </div>
             </td>
         </tr>
