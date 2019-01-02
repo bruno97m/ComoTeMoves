@@ -13,11 +13,7 @@
     <script src="https://unpkg.com/leaflet@1.3.4/dist/leaflet.js" integrity="sha512-nMMmRyTVoLYqjP9hrbed9S+FzjZHW5gY1TWCHA5ckwXZBadntCNs8kEqAWdrb9O7rxbCaA4lKTIWjDXZxflOcA==" crossorigin=""></script>
     <link rel="stylesheet" href="https://unpkg.com/leaflet-measure-path@1.3.1/leaflet-measure-path.css">
     <script src="https://unpkg.com/leaflet-measure-path@1.3.1/leaflet-measure-path.js"></script>
-    <script type="text/javascript" src="  http://cdn.fusioncharts.com/fusioncharts/latest/fusioncharts.js"></script>
-    <!-- Include fusion theme file -->
-    <script type="text/javascript" src="  http://cdn.fusioncharts.com/fusioncharts/latest/themes/fusioncharts.theme.fusion.js"></script>
-    <!-- Include fusioncharts jquery plugin -->
-    <script type="text/javascript" src="  https://rawgit.com/fusioncharts/fusioncharts-jquery-plugin/develop/dist/fusioncharts.jqueryplugin.min.js"></script>
+    <script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/leaflet-easybutton@2/src/easy-button.js"></script>
     <script src="geojson/freguesias.geojson"></script>
     <script src="geojson/metro.geojson"></script>
@@ -243,59 +239,88 @@ and is wrapped around the whole page content, except for the footer in this exam
 
         </div>
         <div id="estatisticas" class="tab-pane fade">
-            <div id="chart-container">FusionCharts will render here</div>
+            <div id="chart-container">Graficos
+                <div id="estatisticas1">
+                </div>
+                <div id="estatisticas2">
+                </div>
+                <div id="estatisticas3">
+                </div>
+            </div>
         </div>
     </div>
 
     <script>
         //Estatisticas Tab with chart.js
 
-        $('#Estatisticas').click(function(e) {
+             google.charts.load('current', {'packages':['corechart']});
+        google.charts.setOnLoadCallback(drawChart);
 
-            $("#chart-container").insertFusionCharts({
-                type: "column2d",
-                width: "700",
-                height: "400",
-                dataFormat: "json",
-                dataSource: {
-                    // Chart Configuration
-                    "chart": {
-                        "caption": "Countries With Most Oil Reserves [2017-18]",
-                        "subCaption": "In MMbbl = One Million barrels",
-                        "xAxisName": "Country",
-                        "yAxisName": "Reserves (MMbbl)",
-                        "numberSuffix": "K",
-                        "theme": "fusion",
-                    },
-                    // Chart Data
-                    "data": [{
-                        "label": "Venezuela",
-                        "value": "290"
-                    }, {
-                        "label": "Saudi",
-                        "value": "260"
-                    }, {
-                        "label": "Canada",
-                        "value": "180"
-                    }, {
-                        "label": "Iran",
-                        "value": "140"
-                    }, {
-                        "label": "Russia",
-                        "value": "115"
-                    }, {
-                        "label": "UAE",
-                        "value": "100"
-                    }, {
-                        "label": "US",
-                        "value": "30"
-                    }, {
-                        "label": "China",
-                        "value": "30"
-                    }]
+        function drawChart() {
+
+            $.getJSON('http://localhost:3000/getEstatisticas1', function(data) {
+                console.log(data);
+                var items = [['Age', 'Number']];
+                for(item in data) {
+                    var i = [data[item].Age, parseInt(data[item].Number)];
+                    items.push(i);
                 }
+                var dataTable = google.visualization.arrayToDataTable(items);
+                var options = {
+                    title: 'Faixa Etária',
+                    width:900,
+                    height:500
+                };
+
+                var chart = new google.visualization.BarChart(document.getElementById('estatisticas1'));
+
+                chart.draw(dataTable, options);
+
             });
-        });
+
+                //------------------------------------------------------
+
+            $.getJSON('http://localhost:3000/getEstatisticas2', function(data) {
+                var items = [['Tranport', 'Number']];
+                for(item in data) {
+                    var i = [data[item].Transport, parseInt(data[item].Number)];
+                    console.log(i);
+                    items.push(i);
+                }
+                var dataTable = google.visualization.arrayToDataTable(items);
+                var options = {
+                    title: 'Transporte',
+                    width:900,
+                    height:500
+                };
+
+                var chart = new google.visualization.PieChart(document.getElementById('estatisticas2'));
+                chart.draw(dataTable, options);
+
+
+            });
+
+        //---------------------------------------------------------------------------------------------------
+
+        $.getJSON('http://localhost:3000/getEstatisticas3', function(data) {
+                var items = [['Hour', 'Number']];
+                for(item in data) {
+                    var i = [data[item].Hour, parseInt(data[item].Number)];
+                    console.log(i);
+                    items.push(i);
+                }
+                var dataTable = google.visualization.arrayToDataTable(items);
+                var options = {
+                    title: 'Transporte',
+                    width:900,
+                    height:500
+                };
+
+                var chart = new google.visualization.LineChart(document.getElementById('estatisticas3'));
+                chart.draw(dataTable, options);
+
+            });
+        }
 
         //map tab with leaflet
 
@@ -329,13 +354,14 @@ and is wrapped around the whole page content, except for the footer in this exam
             });
 
 
+
             function onEachFeature(feature, layer) {
                 if (feature.properties.INF_NOME) {
                     layer.setIcon(mIcon);
                     if (feature.properties.INF_DESCRICAO == "NULL") {
-                        layer.bindPopup("Estação de metro " + feature.properties.INF_NOME);
+                        layer.bindPopup("Estação de metro " + feature.properties.INF_NOME + ".");
                     } else {
-                        layer.bindPopup("Estação de metro " + feature.properties.INF_NOME + ".<br> Correspondente à " + feature.properties.INF_DESCRICAO);
+                        layer.bindPopup("Estação de metro " + feature.properties.INF_NOME + ".<br> Correspondente à " + feature.properties.INF_DESCRICAO + ".");
                     }
                 }
 
@@ -369,51 +395,51 @@ and is wrapped around the whole page content, except for the footer in this exam
 
             });
 
-            var helloPopup = L.popup().setContent('Este é o centro de Lisboa, carrega nas áreas laranja para visualizar as freguesias!');
-
-            L.easyButton("show", function(btn, map) {
-
+            var helloPopup = L.popup().setContent('Este é o centro de Lisboa!');
+            //Center map of Lisbon
+            L.easyButton('<img src="https://img.icons8.com/material/24/000000/center-direction.png" style="width:16px" >', function(btn, map) {
                 helloPopup.setLatLng(map.getCenter()).openOn(map);
                 map.setView([lat, long], 11.5);
 
-                function onEachFreguesia(feature, layer) {
-                    if (feature.properties && feature.properties.NOME) {
-                        layer.bindPopup(feature.properties.NOME);
-                    }
-                }
-                L.geoJSON(freguesias, {
-                    style: freguesiaStyle,
-                    onEachFeature: onEachFreguesia
-                }).addTo(map);
             }).addTo(map);
 
-            //center map on Lisbon
-            L.easyButton('<img src="https://image.flaticon.com/icons/png/512/4/4430.png">', function(btn, map) {
-                map.setView([lat, long], 11.5);
-            }).addTo(map);
+
+            function onEachFreguesia(feature, layer) {
+                if (feature.properties && feature.properties.NOME) {
+                    layer.bindPopup(feature.properties.NOME);
+                }
+            }
 
 
             var stateChangingButton = L.easyButton({
                 states: [{
-                    stateName: 'zoom-to-forest', // name the state
+                    stateName: 'showFreguesias', // name the state
                     icon: 'fa-tree', // and define its properties
-                    title: 'zoom to a forest', // like its title
+                    title: 'mostra freguesias', // like its title
                     onClick: function(btn, map) { // and its callback
-                        map.setView([46.25, -121.8], 10);
-                        btn.state('zoom-to-school'); // change state on click!
+                        geojsonLayer = L.geoJSON(freguesias, {
+                            style: freguesiaStyle,
+                            onEachFeature: onEachFreguesia
+                        });
+                        geojsonLayer.addTo(map);
+                        btn.state('hideFreguesias'); // change state on click!   // change state on click!
                     }
                 }, {
-                    stateName: 'zoom-to-school',
+                    stateName: 'hideFreguesias',
                     icon: 'fa-university',
-                    title: 'zoom to a school',
+                    title: 'esconde freguesias',
                     onClick: function(btn, map) {
-                        map.setView([42.3748204, -71.1161913], 16);
-                        btn.state('zoom-to-forest');
+                        map.setView([lat, long], );
+                        map.removeLayer(geojsonLayer);
+
+                        btn.state('showFreguesias');
                     }
                 }]
             });
 
             stateChangingButton.addTo(map);
+
+
 
         });
 
