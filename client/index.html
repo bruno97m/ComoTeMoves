@@ -5,6 +5,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
+
     <title> Login </title>
 
 
@@ -17,7 +18,7 @@
 <body>
     <!--<h1 class="nome">MeetYourMate</h1> -->
     <p class="logo"><img id="logo" src="https://upload.wikimedia.org/wikipedia/commons/thumb/2/21/Thales_Logo.svg/2000px-Thales_Logo.svg.png" border="0"></p>
-    <form action="/login" method="post">
+    <form action="/login" id ="login" method="post">
     <table class="login">
         <tr>
 
@@ -38,7 +39,10 @@
         <tr>
 
             <td colspan="2" style="align-content: center">
-                <div style="text-align: center"><input type="button" onclick="login()" value="Login" />
+                <div style="text-align: center">
+                       <input type="button" value="Confirm" id="success" class="button" onclick="login()" />
+
+
                 </div>
             </td>
         </tr>
