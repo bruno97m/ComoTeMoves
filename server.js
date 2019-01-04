@@ -134,6 +134,15 @@ app.get('/test', function (req, res) {
 });
 
 
+
+
+
+
+
+
+
+
+
 app.post('/submit', function (req, res) {
     console.log(req.body);
     var username = req.body.username;
@@ -169,7 +178,7 @@ app.post('/submit', function (req, res) {
 
                 let sql = "SELECT LAST_INSERT_ID() as user_id";
 
-                db.query(sql, function(err, result){
+                db.query(sql, function (err, result) {
                     if (err) throw err;
 
                     var user_id = result[0];
@@ -190,23 +199,29 @@ app.post('/submit', function (req, res) {
 });
 
 
+app.get('/login',(req,res)=>{
+
+  res.redirect('/index.html');
+
+});
+
 //Local - for local database strategy
 app.post('/login', passport.authenticate('local', {
 
-    successRedirect: '/dashboard.html',
-    failureRedirect: '/index.html'
+successRedirect: '/dashboard',
+failureRedirect: '/login'
 
 }));
 
-app.get('/dashboard', authenticationMiddleware(), function (req, res) {
+app.get('/dashboard', authenticationMiddleware (), (req,res)=>{
 
 
-    //  deserializeUser ... if so - creates a session and returns a session key
-    console.log(req.user);
-    console.log(req.isAuthenticated());
-    res.sendFile(__dirname + '/client/dashboard.html');
+//  deserializeUser ... if so - creates a session and returns a session key
+  console.log(req.user);
+  console.log(req.isAuthenticated());
+  res.redirect('/dashboard.html');
 
-});
+	});
 
 
 //verify if the user exists and the password is correct
@@ -224,28 +239,26 @@ passport.use(new LocalStrategy(
 
             //if nothing is returned
             if (result.length === 0) {
-                console.log("Empty");
                 done(null, false);
             }
 
+            console.log(result[0].password.toString());
             const hash = result[0].password.toString();
-            var res = bcrypt.compareSync(password, hash);
 
-            if (res === true) {
-
-                return done(null, {
-                    user_id: result[0].id
-                });
-
-            }
+            bcrypt.compare(password, hash, function (err, response) {
+                if (response === true) {
+                    return done(null, {
+                        user_id: result[0].id
+                    });
+                } else {
+                    return done(null, false);
+                }
+            });
 
         });
 
-
-
-        return done(null, false);
-
-    }));
+    }
+));
 
 
 //writing user data in the session
@@ -264,6 +277,6 @@ function authenticationMiddleware() {
         console.log(`req.session.passport.user: ${JSON.stringify(req.session.passport)}`);
 
         if (req.isAuthenticated()) return next();
-        res.sendFile(__dirname + '/client/index.html');
+        res.redirect('/login');
     }
 }
