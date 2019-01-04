@@ -12,28 +12,11 @@ var http = require('http')
 var app = express();
 var bcrypt = require('bcrypt');
 var router = express.Router();
+var path = require('path');
+var db = require('./db');
 
+//sendFile(__dirname+'/public..)
 
-
-
-//sql create connection
-var db = mysql.createConnection({
-    //properties
-    host: 'localhost',
-    port: 3310,
-    user: 'root',
-    password: '',
-    database: 'thales2018',
-    socketPath: "/Applications/XAMPP/xamppfiles/var/mysql/mysql.sock"
-});
-
-db.connect(function (err) {
-    if (err) {
-        console.log('error');
-    } else {
-        console.log('Connected')
-    }
-});
 
 app.listen(3000, function () {
     console.log('Example app listening on port 3000!!!');
@@ -42,7 +25,7 @@ app.listen(3000, function () {
 
 app.use(cookieParser());
 app.use(express.static('client'));
-
+app.use(expressValidator());
 app.use(session({
     secret: 'jibirish',
     resave: false,
@@ -58,10 +41,8 @@ app.use(bodyParser.urlencoded({
     extended: false
 }))
 
+
 // parse application/json
-
-
-
 
 
 app.get('/getUser', function (req, res) {
@@ -83,14 +64,9 @@ app.get('/getCoordenadas', function (req, res) {
     });
 });
 
-app.get('/getEstatisticas1', function (req, res) {
-    let sql = "SELECT concat(11*floor(sd.AGE/11), '-', 11*floor(sd.AGE/11) + 10) as 'Age', COUNT(*) AS 'Number' FROM simulation_data AS sd INNER JOIN im_sim_0_pt_checks AS im ON sd.USER_ID = im.USER_ID group by 1 ORDER BY sd.AGE;";
-    console.log(sql);
-    db.query(sql, (err, result) => {
-        if (err) throw err;
-        res.send(result);
-    });
-});
+
+
+
 
 app.get('/getEstatisticas2', function (req, res) {
     let sql = "SELECT DISTINCT 'BUS' AS Transport, COUNT(*) AS Number FROM im_sim_0_pt_checks AS Number WHERE CHECK_TYPE LIKE '%BUS%' UNION SELECT DISTINCT 'TRAIN' AS Transport, COUNT(*) AS Number FROM im_sim_0_pt_checks AS Number WHERE CHECK_TYPE LIKE '%TRAIN%' UNION SELECT DISTINCT 'SUBWAY' AS Transport, COUNT(*) AS Number FROM im_sim_0_pt_checks AS Number WHERE CHECK_TYPE LIKE '%SUBWAY%';";
@@ -102,7 +78,7 @@ app.get('/getEstatisticas2', function (req, res) {
 
 app.get('/getEstatisticas3', function (req, res) {
     let sql = "SELECT concat(HOUR(CONVERT(DATE_TIME, DATETIME)), '-', HOUR(CONVERT(DATE_TIME, DATETIME)) + 1) as Hour, COUNT(*) AS Number FROM simulation_data group by 1 ORDER BY HOUR(CONVERT(DATE_TIME, DATETIME))";
-        db.query(sql, (err, result) => {
+    db.query(sql, (err, result) => {
         if (err) throw err;
         res.send(result);
     });
@@ -119,9 +95,6 @@ app.get('/test', function (req, res) {
         }
     });
 });
-router.get('/submit', function (req, res) {
-       res.redirect("/");
-});
 
 
 app.post('/submit', function (req, res) {
@@ -131,17 +104,31 @@ app.post('/submit', function (req, res) {
     var password = req.body.password;
     var checkpassword = req.body.checkpassword;
 
+    req.checkBody('username', ' Campo obrigatório').notEmpty();
+    req.checkBody('email', ' Campo obrigatório').notEmpty();
+    req.checkBody('password', ' Campo obrigatório').notEmpty();
+    req.checkBody('checkpassword', ' Passwords não coincidem').equals(req.body.password);
 
-    console.log(username, email);
 
+    var errors = req.validationErrors();
 
-    var sql = 'INSERT INTO user (username,email,password,checkpassword) VALUES (? , ? , ? , ?)';
+    //console.log(errors);
 
-    db.query(sql,[username , email, password, checkpassword] ,function (err) {
-        if (err) throw err;
-          res.redirect("/");
-    });
+    if (errors) {
+        //dá erro
 
+        res.writeHead(300, {
+            'Content-Type': 'application/json'
+        });
+        res.write(JSON.stringify(errors));
+        res.send();
+    } else {
+        var sql = 'INSERT INTO user (username,email,password,checkpassword) VALUES (? , ? , ? , ?)';
+
+        db.query(sql,[username , email, password, checkpassword] ,function (err){
+            if (err) throw err;
+            res.sendFile(__dirname+'/client/index.html');
+        });
+
+    }
 });
-
-
