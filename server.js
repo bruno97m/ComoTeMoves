@@ -11,6 +11,7 @@ var flash = require('connect-flash');
 var http = require('http')
 var app = express();
 var bcrypt = require('bcrypt');
+const saltRounds = 10;
 var router = express.Router();
 var path = require('path');
 var db = require('./db');
@@ -25,7 +26,22 @@ app.listen(3000, function () {
 
 app.use(cookieParser());
 app.use(express.static('client'));
-app.use(expressValidator());
+app.use(expressValidator({
+    errorFormatter: function (param, msg, value) {
+        var namespace = param.split('.'),
+            root = namespace.shift(),
+            formParam = root;
+
+        while (namespace.length) {
+            formParam += '[' + namespace.shift() + ']';
+        }
+        return {
+            param: formParam,
+            msg: msg,
+            value: value
+        };
+    }
+}));
 app.use(session({
     secret: 'jibirish',
     resave: false,
@@ -63,9 +79,6 @@ app.get('/getCoordenadas', function (req, res) {
         res.send(result);
     });
 });
-
-
-
 
 
 app.get('/getEstatisticas2', function (req, res) {
@@ -123,12 +136,20 @@ app.post('/submit', function (req, res) {
         res.write(JSON.stringify(errors));
         res.send();
     } else {
-        var sql = 'INSERT INTO user (username,email,password,checkpassword) VALUES (? , ? , ? , ?)';
+        bcrypt.hash(password, saltRounds, function (err, hash) {
+            // Store hash in your password DB.
+            let sql = "INSERT INTO `user` (`id`, `username`, `email`, `password`,`checkpassword`) VALUES (NULL, '" + username + "', '" + email + "', '" + hash + "', '" + hash + "');"
 
-        db.query(sql,[username , email, password, checkpassword] ,function (err){
-            if (err) throw err;
-            res.sendFile(__dirname+'/client/index.html');
+            db.query(sql, [username, email, password, checkpassword], function (err) {
+                if (err) throw err;
+                res.sendFile(__dirname + '/client/index.html');
+            });
+
         });
-
-    }
+    };
 });
+
+
+
+// Connect Flash
+app.use(flash());
