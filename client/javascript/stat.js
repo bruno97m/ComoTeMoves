@@ -18,7 +18,7 @@
                 }
                 var dataTable = google.visualization.arrayToDataTable(items);
                 var options = {
-                    title: 'Faixa Etária',
+                    title: 'Transporte por Faixa Etária',
                     width: 600,
                     height: 500
                 };
@@ -42,7 +42,7 @@
                 }
                 var dataTable = google.visualization.arrayToDataTable(items);
                 var options = {
-                    title: 'Transporte',
+                    title: 'Percentagem de uso de tipo de transporte',
                     width: 600,
                     height: 500
                 };
@@ -66,7 +66,7 @@
                 }
                 var dataTable = google.visualization.arrayToDataTable(items);
                 var options = {
-                    title: 'Transporte',
+                    title: 'Uso de transportes por hora',
                     width: 900,
                     height: 500
                 };
