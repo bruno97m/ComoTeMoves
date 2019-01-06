@@ -3,6 +3,7 @@ var router = express.Router();
 var bcrypt = require('bcrypt');
 const saltRounds = 10;
 var db = require('../db');
+var nodemailer = require('nodemailer');
 
 
 
@@ -54,6 +55,31 @@ router.post('/', function (req, res) {
                 });
             });
 
+        });
+        var transporter = nodemailer.createTransport({
+            service: 'gmail',
+            auth: {
+                user: 'comotemovesthales@gmail.com',
+                pass: 'comotemoves123'
+            }
+        });
+
+
+        // formulario de email
+        const mailOptions = {
+            from: 'comotemovesthales@gmail.com', // sender address
+            //recebe o email do cliente
+            to: req.body.email, // list of receivers
+            subject: 'Registo CFV', // Subject line
+            html: '<p>Bem vindo </p>' // plain text body
+        };
+
+        // aqui é quando nos permite escrever o email e enviar
+        transporter.sendMail(mailOptions, function (err, info) {
+            if (err)
+                console.log(err)
+            else
+                console.log(info);
         });
     };
 });
