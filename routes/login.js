@@ -15,12 +15,6 @@ router.post('/', passport.authenticate('local', {
     failureRedirect: '/index.html',
 }));
 
-router.get('/logout', function (req,res) {
-    req.logout();
-    req.session.destroy();
-    res.redirect('/');
-});
-
 
 router.get('/dashboard',authenticationMiddleware (), function (req, res) {
 

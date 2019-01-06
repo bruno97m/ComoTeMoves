@@ -17,6 +17,10 @@
     <script src="https://cdn.jsdelivr.net/npm/leaflet-easybutton@2/src/easy-button.js"></script>
     <script src="geojson/freguesias.geojson"></script>
     <script src="geojson/metro.geojson"></script>
+    <script src="javascript/help.js"></script>
+    <script src="javascript/map.js"></script>
+    <script src="javascript/register.js"></script>
+    <script src="javascript/stat.js"></script>
 
     <link rel="stylesheet" href="css/dashboard.css">
     <title> Dashboard </title>
@@ -74,6 +78,17 @@
 
     }
 
+    #bLogout{
+        margin-top: 12px;
+        color: white;
+        background-color: black;
+
+    }
+    span.b {
+  display: inline-block;
+
+}
+
 </style>
 
 
@@ -89,10 +104,11 @@
                 <li class="active"><a id="Home" data-toggle="pill" href="#home">Home</a></li>
                 <li><a id="Mapa" data-toggle="pill" href="#mapa">Mapa</a></li>
                 <li><a id="Estatisticas" data-toggle="pill" href="#estatisticas">Estatísticas</a></li>
+                <li><a id="Fale_Connosco" data-toggle="pill" href="#fale_connosco">Fale Connosco</a></li>
             </ul>
             <ul class="nav navbar-nav navbar-right">
-                <form action="/logout" id ="logout" method="get">
-                <li><input type="submit" value="Logout"/></li>
+                <form action="/logout" id="logout" method="get">
+                    <li><input id="bLogout" type="submit" value="Logout" /></li>
                 </form>
             </ul>
         </div>
@@ -101,7 +117,7 @@
 
     <div class="tab-content" style="padding-top: 10px ">
         <div id="home" class="tab-pane fade in active">
-                <div id="carousel" class="carousel slide" data-ride="carousel">
+            <div id="carousel" class="carousel slide" data-ride="carousel">
                 <!-- Menu -->
                 <ol class="carousel-indicators">
                     <li data-target="#carousel" data-slide-to="0" class="active"></li>
@@ -114,8 +130,8 @@
 
                     <div class="item active">
                         <img src="https://picsum.photos/1500/600?image=1" alt="Slide 1" />
-                        <div class= "carousel-caption">
-                        <h1> Myfirst Caption</h1>
+                        <div class="carousel-caption">
+                            <h1> Myfirst Caption</h1>
                         </div>
                     </div>
 
@@ -127,7 +143,7 @@
                         <img src="https://picsum.photos/1500/600?image=3" alt="Slide 3" />
                     </div>
                 </div>
-                    <!-- Slider control -->
+                <!-- Slider control -->
                 <a href="#carousel" class="left carousel-control" data-slide="prev">
                     <span class="glyphicon glyphicon-chevron-left"></span>
                 </a>
@@ -138,105 +154,39 @@
             ljvznlzvn
         </div>
 
-    <div id="mapa" class="tab-pane fade">
-        <div id="map_canvas"></div>
-
-    </div>
-    <div id="estatisticas" class="tab-pane fade">
-        <div id="chart-container">Graficos
-            <div id="estatisticas1">
-            </div>
-            <div id="estatisticas2">
-            </div>
-            <div id="estatisticas3">
+        <div id="mapa" class="tab-pane fade">
+            <div id="map_canvas"></div>
+        </div>
+        <div id="estatisticas" class="tab-pane fade">
+            <div id="chart-container">
+                   <span class="b"> <div id="estatisticas1">
+                    </div></span>
+                    <span class="b"> <div id="estatisticas2">
+                    </div></span>
+                <div id="estatisticas3">
+                </div>
             </div>
         </div>
-    </div>
-    </div>
+        <div id="fale_connosco" class="tab-pane fade">
+            <form action="/comunicar" method="post">
+                <h1>Fale Connosco</h1>
+                <p>*Nome: <input type="text" name="nome"><span id="nome"></span></p>
+                <p>*Apelido: <input type="text" name="apelido"><span id="apelido"></span></p>
+                <p>*Localidade: <input type="text" name="localidade"><span id="localidade"></span></p>
+                <p>*E-mail: <input type="text" name="email"><span id="email"></span></p>
+                <p>*Telefone: <input type="number" name="telefone"><span id="telefone"></span></p>
+                <p>*Assunto: <input type="text" name="assunto"><span id="assunto"></span></p>
+                <p>*A sua mensagem: <br><textarea name="mensagem" style="width:250px;height:150px;"></textarea><span id="mensagem"></span></p>
+                <p>*Campos Obrigatórios</p>
+                <input type="submit" value="Enviar">
+            </form>
 
-
+        </div>
+    </div>
     <script>
-        //Estatisticas Tab with chart.js
-
-        google.charts.load('current', {
-            'packages': ['corechart']
+        $.post('/comunicar', function(data) {
+            alert("Mensagem enviada")
         });
-        google.charts.setOnLoadCallback(drawChart);
-
-        function drawChart() {
-
-            $.getJSON('http://localhost:3000/getEstatisticas1', function(data) {
-                console.log(data);
-                var items = [
-                    ['Age', 'Number']
-                ];
-                for (item in data) {
-                    var i = [data[item].Age, parseInt(data[item].Number)];
-                    items.push(i);
-                }
-                var dataTable = google.visualization.arrayToDataTable(items);
-                var options = {
-                    title: 'Faixa Etária',
-                    width: 900,
-                    height: 500
-                };
-
-                var chart = new google.visualization.BarChart(document.getElementById('estatisticas1'));
-
-                chart.draw(dataTable, options);
-
-            });
-
-            //------------------------------------------------------
-
-            $.getJSON('http://localhost:3000/getEstatisticas2', function(data) {
-                var items = [
-                    ['Tranport', 'Number']
-                ];
-                for (item in data) {
-                    var i = [data[item].Transport, parseInt(data[item].Number)];
-                    console.log(i);
-                    items.push(i);
-                }
-                var dataTable = google.visualization.arrayToDataTable(items);
-                var options = {
-                    title: 'Transporte',
-                    width: 900,
-                    height: 500
-                };
-
-                var chart = new google.visualization.PieChart(document.getElementById('estatisticas2'));
-                chart.draw(dataTable, options);
-
-
-            });
-
-            //---------------------------------------------------------------------------------------------------
-
-            $.getJSON('http://localhost:3000/getEstatisticas3', function(data) {
-                var items = [
-                    ['Hour', 'Number']
-                ];
-                for (item in data) {
-                    var i = [data[item].Hour, parseInt(data[item].Number)];
-                    console.log(i);
-                    items.push(i);
-                }
-                var dataTable = google.visualization.arrayToDataTable(items);
-                var options = {
-                    title: 'Transporte',
-                    width: 900,
-                    height: 500
-                };
-
-                var chart = new google.visualization.LineChart(document.getElementById('estatisticas3'));
-                chart.draw(dataTable, options);
-
-            });
-        }
-
-        //map tab with leaflet
-
         $('#Mapa').click(function(e) {
             setTimeout(function() {
                 map.invalidateSize()
@@ -357,6 +307,7 @@
         });
 
     </script>
+
 </body>
 
 </html>

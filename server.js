@@ -18,6 +18,7 @@ var db = require('./db');
 const saltRounds = 10;
 var register = require('./routes/register');
 var login = require('./routes/login');
+var help = require('./routes/help');
 
 //sendFile(__dirname+'/public..)
 
@@ -80,7 +81,7 @@ app.get('/getCoordenadas', function (req, res) {
         res.send(result);
     });
 });
-   //-----------------------------------------Estatisticas----------------------------------------------------------
+//-----------------------------------------Estatisticas----------------------------------------------------------
 app.get('/getEstatisticas1', function (req, res) {
     let sql = "SELECT concat(11*floor(sd.AGE/11), '-', 11*floor(sd.AGE/11) + 10) as 'Age', COUNT(*) AS 'Number' FROM simulation_data AS sd INNER JOIN im_sim_0_pt_checks AS im ON sd.USER_ID = im.USER_ID group by 1 ORDER BY sd.AGE;";
     console.log(sql);
@@ -89,22 +90,23 @@ app.get('/getEstatisticas1', function (req, res) {
         res.send(result);
     });
 });
- app.get('/getEstatisticas2', function (req, res) {
+app.get('/getEstatisticas2', function (req, res) {
     let sql = "SELECT DISTINCT 'BUS' AS Transport, COUNT(*) AS Number FROM im_sim_0_pt_checks AS Number WHERE CHECK_TYPE LIKE '%BUS%' UNION SELECT DISTINCT 'TRAIN' AS Transport, COUNT(*) AS Number FROM im_sim_0_pt_checks AS Number WHERE CHECK_TYPE LIKE '%TRAIN%' UNION SELECT DISTINCT 'SUBWAY' AS Transport, COUNT(*) AS Number FROM im_sim_0_pt_checks AS Number WHERE CHECK_TYPE LIKE '%SUBWAY%';";
     db.query(sql, (err, result) => {
         if (err) throw err;
         res.send(result);
     });
 });
- app.get('/getEstatisticas3', function (req, res) {
+app.get('/getEstatisticas3', function (req, res) {
     let sql = "SELECT concat(HOUR(CONVERT(DATE_TIME, DATETIME)), '-', HOUR(CONVERT(DATE_TIME, DATETIME)) + 1) as Hour, COUNT(*) AS Number FROM simulation_data group by 1 ORDER BY HOUR(CONVERT(DATE_TIME, DATETIME))";
-        db.query(sql, (err, result) => {
+    db.query(sql, (err, result) => {
         if (err) throw err;
         res.send(result);
     });
 });
 
-app.get('/logout', function (req,res) {
+//logout
+app.get('/logout', function (req, res) {
     req.logout();
     req.session.destroy();
     res.redirect('/');
@@ -121,9 +123,7 @@ passport.deserializeUser(function (user_id, done) {
     done(null, user_id);
 });
 
-
-app.use('/login',login);
-app.use('/dashboard',login);
+app.use('/login', login);
+app.use('/dashboard', login);
 app.use('/submit', register);
-
-
+app.use('/comunicar',help);
