@@ -20,6 +20,8 @@
     <script src="javascript/map.js"></script>
     <script src="javascript/register.js"></script>
     <script src="javascript/stat.js"></script>
+    <script src="javascript/ajuda.js"></script>
+
 
     <link rel="stylesheet" href="css/dashboard.css">
     <title> Dashboard </title>
@@ -152,15 +154,15 @@
             </div>
         </div>
         <div id="fale_connosco" class="tab-pane fade">
-            <form action="/comunicar" method="post">
+            <form action="/comunicar" method="post" onsubmit="return validateForm()" name="Form">
                 <h1>Fale Connosco</h1>
-                <p>*Nome: <input type="text" name="nome"><span id="nome"></span></p>
-                <p>*Apelido: <input type="text" name="apelido"><span id="apelido"></span></p>
-                <p>*Localidade: <input type="text" name="localidade"><span id="localidade"></span></p>
-                <p>*E-mail: <input type="text" name="email"><span id="email"></span></p>
-                <p>*Telefone: <input type="number" name="telefone"><span id="telefone"></span></p>
-                <p>*Assunto: <input type="text" name="assunto"><span id="assunto"></span></p>
-                <p>*A sua mensagem: <br><textarea name="mensagem" style="width:250px;height:150px;"></textarea><span id="mensagem"></span></p>
+                <p>*Nome: <input type="text" name="nome" required><span id="nome"></span></p>
+                <p>*Apelido: <input type="text" name="apelido" required><span id="apelido"></span></p>
+                <p>*Localidade: <input type="text" name="localidade" required><span id="localidade"></span></p>
+                <p>*E-mail: <input type="text" name="email" required><span id="email"></span></p>
+                <p>*Telefone: <input type="number" name="telefone" required><span id="telefone"></span></p>
+                <p>*Assunto: <input type="text" name="assunto" required><span id="assunto"></span></p>
+                <p>*A sua mensagem: <br><textarea name="mensagem" style="width:250px;height:150px;" required></textarea><span id="mensagem"></span></p>
                 <p>*Campos Obrigatórios</p>
                 <input type="submit" value="Enviar">
             </form>
@@ -171,7 +173,7 @@
         $('#Mapa').click(function(e) {
             setTimeout(function() {
                 map.invalidateSize()
-            }, 500);
+            }, 200);
 
             var lat = 38.7071; //center
             var long = -9.13549; //center
@@ -241,7 +243,7 @@
 
             var helloPopup = L.popup().setContent('Este é o centro de Lisboa!');
             //Center map of Lisbon
-            L.easyButton('<img src="https://img.icons8.com/material/24/000000/center-direction.png" style="width:16px" >', function(btn, map) {
+            L.easyButton('<img src="https://img.icons8.com/windows/32/000000/marker.png" style="width:20px" >', function(btn, map) {
                 helloPopup.setLatLng(map.getCenter()).openOn(map);
                 map.setView([lat, long], 11.5);
 
@@ -261,6 +263,7 @@
                     icon: 'fa-tree', // and define its properties
                     title: 'mostra freguesias', // like its title
                     onClick: function(btn, map) { // and its callback
+                        map.setView([lat, long], 11.5);
                         geojsonLayer = L.geoJSON(freguesias, {
                             style: freguesiaStyle,
                             onEachFeature: onEachFreguesia
@@ -273,7 +276,7 @@
                     icon: 'fa-university',
                     title: 'esconde freguesias',
                     onClick: function(btn, map) {
-                        map.setView([lat, long], );
+                        map.setView([lat, long], 11.5);
                         map.removeLayer(geojsonLayer);
 
                         btn.state('showFreguesias');
@@ -282,28 +285,34 @@
             });
 
             stateChangingButton.addTo(map);
+            L.easyButton('<img src="https://img.icons8.com/material/24/000000/center-direction.png" style="width:16px">', function(btn, map) {
 
-function onLocationFound(e) {
-			var radius = e.accuracy / 2;
+                function onLocationFound(e) {
+                    var radius = e.accuracy / 2;
 
-//Create pop-up to display location accuracy.  Location is coming from IP location or GPS receiver in mobile device
-			L.marker(e.latlng).addTo(map)
-				.bindPopup("You are within " + radius + " meters from this point").openPopup();
+                    //Create pop-up to display location accuracy.  Location is coming from IP location or GPS receiver in mobile device
+                    L.marker(e.latlng).addTo(map)
+                        .bindPopup("Estás localizado nesta zona! A " + radius + " metros dentro do circulo.").openPopup();
 
-//Create circle to graphically represent location accuracy
-			L.circle(e.latlng, radius).addTo(map);
-		}
+                    //Create circle to graphically represent location accuracy
+                    L.circle(e.latlng, radius).addTo(map);
+                }
 
-//Code for handling any errors that come up
-		function onLocationError(e) {
-			alert(e.message);
-		}
+                //Code for handling any errors that come up
+                function onLocationError(e) {
+                    alert(e.message);
+                }
 
-		map.on('locationfound', onLocationFound);
-		map.on('locationerror', onLocationError);
+                map.on('locationfound', onLocationFound);
+                map.on('locationerror', onLocationError);
 
-//Locate point and zoom to that location with a zoom level of 16
-		map.locate({setView: true, maxZoom: 16});
+                //Locate point and zoom to that location with a zoom level of 16
+                map.locate({
+                    setView: true,
+                    maxZoom: 16
+                });
+
+            }).addTo(map);
 
         });
 

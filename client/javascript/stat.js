@@ -8,7 +8,6 @@
         function drawChart() {
 
             $.getJSON('http://localhost:3000/getEstatisticas1', function(data) {
-                console.log(data);
                 var items = [
                     ['Age', 'Number']
                 ];
