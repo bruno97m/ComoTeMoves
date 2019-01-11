@@ -17,7 +17,6 @@
     <script src="https://cdn.jsdelivr.net/npm/leaflet-easybutton@2/src/easy-button.js"></script>
     <script src="geojson/freguesias.geojson"></script>
     <script src="geojson/metro.geojson"></script>
-    <script src="javascript/help.js"></script>
     <script src="javascript/map.js"></script>
     <script src="javascript/register.js"></script>
     <script src="javascript/stat.js"></script>
@@ -169,9 +168,6 @@
         </div>
     </div>
     <script>
-        $.post('/comunicar', function(data) {
-            alert("Mensagem enviada")
-        });
         $('#Mapa').click(function(e) {
             setTimeout(function() {
                 map.invalidateSize()
@@ -287,7 +283,27 @@
 
             stateChangingButton.addTo(map);
 
+function onLocationFound(e) {
+			var radius = e.accuracy / 2;
 
+//Create pop-up to display location accuracy.  Location is coming from IP location or GPS receiver in mobile device
+			L.marker(e.latlng).addTo(map)
+				.bindPopup("You are within " + radius + " meters from this point").openPopup();
+
+//Create circle to graphically represent location accuracy
+			L.circle(e.latlng, radius).addTo(map);
+		}
+
+//Code for handling any errors that come up
+		function onLocationError(e) {
+			alert(e.message);
+		}
+
+		map.on('locationfound', onLocationFound);
+		map.on('locationerror', onLocationError);
+
+//Locate point and zoom to that location with a zoom level of 16
+		map.locate({setView: true, maxZoom: 16});
 
         });
 

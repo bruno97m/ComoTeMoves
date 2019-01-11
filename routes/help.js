@@ -54,7 +54,6 @@ router.post('/', function (req, res, next) {
                 console.log(info);
         });
     }
-    res.redirect('/dashboard.html')
 });
 
 module.exports = router;

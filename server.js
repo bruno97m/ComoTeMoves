@@ -84,7 +84,6 @@ app.get('/getCoordenadas', function (req, res) {
 //-----------------------------------------Estatisticas----------------------------------------------------------
 app.get('/getEstatisticas1', function (req, res) {
     let sql = "SELECT concat(11*floor(sd.AGE/11), '-', 11*floor(sd.AGE/11) + 10) as 'Age', COUNT(*) AS 'Number' FROM simulation_data AS sd INNER JOIN im_sim_0_pt_checks AS im ON sd.USER_ID = im.USER_ID group by 1 ORDER BY sd.AGE;";
-    console.log(sql);
     db.query(sql, (err, result) => {
         if (err) throw err;
         res.send(result);
