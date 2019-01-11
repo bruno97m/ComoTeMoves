@@ -15,7 +15,7 @@ router.post('/', function (req, res) {
     var checkpassword = req.body.checkpassword;
 
     req.checkBody('username', ' Campo obrigatorio').notEmpty();
-     req.checkBody('username', ' Campo obrigatorio de 4-15 caracteres').len(4,15);
+     req.checkBody('username', ' Campo obrigatorio de 4-15 caracteres');
     req.checkBody('email', ' Campo obrigatório').notEmpty();
     req.checkBody('password', ' Campo obrigatório').notEmpty();
     req.checkBody('checkpassword', ' Passwords não coincidem').equals(req.body.password);
@@ -27,8 +27,7 @@ router.post('/', function (req, res) {
 
     if (errors) {
         console.log('erros: ${JSON.stringify(errors)}')
-        res.write(JSON.stringify(errors));
-        res.send();
+        res.redirect('/register.html')
     } else {
         bcrypt.hash(password, saltRounds, function (err, hash) {
             // Store hash in your password DB.
